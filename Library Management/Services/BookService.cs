@@ -1,5 +1,8 @@
 ﻿using Library_Management.Models;
 using Library_Management_Domain.Entities;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 public class BookService
 {
@@ -314,6 +317,38 @@ public class BookService
             author.Name = vm.Author;
             author.ProfileImageUrl = vm.AuthorProfileImageUrl;
         }
+    }
+
+    public void DeleteBook(Guid id)
+    {
+        var book = _books.FirstOrDefault(b => b.Id == id);
+        if (book != null)
+        {
+            _books.Remove(book);
+            // Remove all copies of this book
+            var copiesToRemove = _bookCopies.Where(bc => bc.Book != null && bc.Book.Id == id).ToList();
+            foreach (var copy in copiesToRemove)
+                _bookCopies.Remove(copy);
+            // Remove book from authors
+            foreach (var author in _authors)
+                author.Books.RemoveAll(b => b.Id == id);
+        }
+    }
+
+    public void AddBookCopy(AddBookCopyViewModel vm)
+    {
+        var book = _books.FirstOrDefault(b => b.Id == vm.BookId);
+        if (book == null) throw new KeyNotFoundException("Book not found");
+        var copy = new BookCopy
+        {
+            Id = Guid.NewGuid(),
+            CoverImageUrl = vm.CoverImageUrl,
+            Condition = vm.Condition,
+            Source = vm.Source,
+            AddedDate = DateTime.Now,
+            Book = book
+        };
+        _bookCopies.Add(copy);
     }
 
     // Singleton pattern

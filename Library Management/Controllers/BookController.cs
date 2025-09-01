@@ -16,13 +16,27 @@ namespace Library_Management.Controllers
             return View();
         }
 
-     
+        // Modal GET for Add Book
+        public IActionResult AddModal()
+        {
+            return PartialView("_AddBookPartial", new AddBookViewModel());
+        }
+
+        [HttpPost]
+        public IActionResult Add(AddBookViewModel vm)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            BookService.Instance.AddBook(vm);
+            return Ok();
+        }
+
         public IActionResult EditModal(Guid id)
         {
             var editBookViewModel = BookService.Instance.GetBookById(id);
             if (editBookViewModel == null) return NotFound();
-
-          
             return PartialView("_EditBookPartial", editBookViewModel);
         }
 
@@ -31,13 +45,9 @@ namespace Library_Management.Controllers
         {
             if (!ModelState.IsValid)
             {
-                // If model state is not valid, you can return a view with validation errors
                 return BadRequest(ModelState);
             }
-
-            // Assuming BookService has a method to update the book
             BookService.Instance.UpdateBook(vm);
-
             return Ok();
         }
 
@@ -47,6 +57,30 @@ namespace Library_Management.Controllers
             return View(book);
         }
 
+        [HttpDelete]
+        public IActionResult Delete(Guid id)
+        {
+            BookService.Instance.DeleteBook(id);
+            return Ok();
+        }
 
+        // Add BookCopy modal GET
+        public IActionResult AddCopyModal(Guid bookId)
+        {
+            var vm = new AddBookCopyViewModel { BookId = bookId };
+            return PartialView("_AddBookCopyPartial", vm);
+        }
+
+        // Add BookCopy modal POST
+        [HttpPost]
+        public IActionResult AddCopy(AddBookCopyViewModel vm)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            BookService.Instance.AddBookCopy(vm);
+            return Ok();
+        }
     }
 }

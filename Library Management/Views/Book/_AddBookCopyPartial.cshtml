@@ -1,0 +1,30 @@
+@model Library_Management.Models.AddBookCopyViewModel
+
+<form asp-action="AddCopy" method="post" id="addBookCopyForm">
+    <div class="modal-header">
+        <h5 class="modal-title">Add Book Copy</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    </div>
+    <div class="modal-body">
+        @Html.HiddenFor(m => m.BookId)
+        <div class="mb-3">
+            <label asp-for="CoverImageUrl" class="form-label"></label>
+            <input asp-for="CoverImageUrl" class="form-control" />
+            <span asp-validation-for="CoverImageUrl" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="Condition" class="form-label"></label>
+            <input asp-for="Condition" class="form-control" />
+            <span asp-validation-for="Condition" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="Source" class="form-label"></label>
+            <input asp-for="Source" class="form-control" />
+            <span asp-validation-for="Source" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="submit" class="btn btn-primary">Add Copy</button>
+    </div>
+</form>
